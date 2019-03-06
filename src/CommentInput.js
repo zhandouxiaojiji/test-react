@@ -1,11 +1,18 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 class CommentInput extends Component {
+    static propTypes = {
+        onSubmit: PropTypes.func
+    }
     constructor() {
         super()
         this.state = {
             username: '',
             content: ''
         }
+    }
+    componentDidMount () {
+        this.textarea.focus()
     }
     handleUsernameChange(event) {
         this.setState({
@@ -19,8 +26,11 @@ class CommentInput extends Component {
     }
     handleSubmit() {
         if (this.props.onSubmit) {
-            const { username, content } = this.state
-            this.props.onSubmit({ username, content })
+            this.props.onSubmit({
+                username: this.state.username,
+                content: this.state.content,
+                createdTime: +new Date()
+            })
         } else {
             alert("onSubmit is null")
         }
@@ -42,6 +52,7 @@ class CommentInput extends Component {
                     <span className='comment-field-name'>评论内容：</span>
                     <div className='comment-field-input'>
                         <textarea
+                            ref={(textarea) => this.textarea = textarea}
                             value={this.state.content}
                             onChange={this.handleContentChange.bind(this)}
                         />
